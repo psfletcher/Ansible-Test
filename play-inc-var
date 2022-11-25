@@ -3,6 +3,6 @@
    hosts: localhost
    gather_facts: false
    vars_files:
-  - ./vars/vars
+    - ./vars/vars
    tasks:
     - include: play-vars.yml
