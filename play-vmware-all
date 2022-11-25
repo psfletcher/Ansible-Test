@@ -1,6 +1,6 @@
 ---
 - hosts: localhost
-  gather_facts: no
+  #gather_facts: no
   tasks:
     - name: Look up VM's in the 231WebServers Folder
       vmware.vmware_rest.vcenter_vm_info:
