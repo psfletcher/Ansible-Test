@@ -1,5 +1,5 @@
 ---
 - name: run include
-  #hosts: localhost
+  hosts: localhost
   tasks:
   - include_tasks: play-vars
