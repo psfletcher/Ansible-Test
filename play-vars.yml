@@ -1,18 +1,17 @@
 ---
-- name: Example External Variables file
-  hosts: localhost
-  vars_files:
-    - ./vars/vars
+#- name: Example External Variables file
+#  hosts: localhost
+#  vars_files:
+#    - ./vars/vars
+tasks:
+- name: Print the value of variable docker_version
+  debug: 
+    msg: "{{ docker_version}} "
 
-  tasks:
-  - name: Print the value of variable docker_version
-    debug: 
-      msg: "{{ docker_version}} "
+- name: Print the value of group variable http_port
+  debug: 
+    msg: "{{ vcenter_password }} "
   
-  - name: Print the value of group variable http_port
-    debug: 
-      msg: "{{ vcenter_password }} "
-  
-  - name: Print the value of host variable app_version
-    debug: 
-      msg: "{{vcenter_hostname }} "
+- name: Print the value of host variable app_version
+  debug:
+    msg: "{{vcenter_hostname }} "
