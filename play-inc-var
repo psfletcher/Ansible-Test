@@ -1,6 +1,6 @@
 ---
 - name: run include
-  hosts: localhost
+  #hosts: localhost
   tasks:
     - debug:
         msg: task1
