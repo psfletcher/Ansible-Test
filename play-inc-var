@@ -3,5 +3,4 @@
    hosts: localhost
    gather_facts: false
    tasks:
-     - name: task1
      - include: play-vars
