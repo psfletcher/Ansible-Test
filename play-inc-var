@@ -3,4 +3,4 @@
    hosts: localhost
    gather_facts: false
    tasks:
-     include_playbook: play-vars.yml
+    - include_playbook: play-vars.yml
