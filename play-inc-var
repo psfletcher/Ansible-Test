@@ -1,0 +1,10 @@
+- hosts: localhost
+  tasks:
+    - debug:
+        msg: task1
+
+    - name: Include task list in play
+      include: play-vmware-all-vars
+
+    - debug:
+        msg: task10

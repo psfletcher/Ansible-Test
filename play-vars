@@ -1,7 +1,7 @@
 - name: Example External Variables file
   hosts: localhost
   vars_files:
-    - ./vars
+    - ./vars/vars
 
   tasks:
   - name: Print the value of variable docker_version
