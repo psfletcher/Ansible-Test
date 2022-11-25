@@ -6,4 +6,4 @@
    # - ./vars/vars
   #tasks:
 - name: Got to get this to work
-  import_playbook: play-vmware-all
+  import_playbook: play-vmware-all-vars
