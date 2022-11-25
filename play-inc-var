@@ -3,4 +3,4 @@
    hosts: localhost
    gather_facts: false
    tasks:
-    - include_playbook: tasks-1.yml
+    - include: tasks-1.yml
