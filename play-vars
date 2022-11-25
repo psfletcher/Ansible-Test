@@ -1,3 +1,4 @@
+---
 - name: Example External Variables file
   hosts: localhost
   vars_files:
