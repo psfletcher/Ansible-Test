@@ -1,0 +1,43 @@
+---
+- hosts: localhost
+    vars_files:
+    - ./vars/vars
+  gather_facts: no
+  tasks:
+    - name: Look up VM's in the 231WebServers Folder
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "{{ vcenter_username }}"
+        vcenter_password: "{{ vcenter_password }}"
+        vcenter_hostname: "{{ vcenter_hostname }}"
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+#        power_states: "POWERED_ON"
+        folders: 
+        - "group-v1025"
+      register: search_231WebServers
+
+    - debug:
+       var: search_231WebServers
+
+#######################
+########################
+    - name: Filter 231WebServers
+      set_fact:
+        vm_list231: "{{ vm_list231 | default([]) + [ item.vm ] }}"
+      loop: "{{ search_231WebServers.value }}"
+
+    - debug:
+       var: vm_list231
+
+    - name: Shut down the VM - 231WebServers
+      vmware.vmware_rest.vcenter_vm_guest_power:
+        vcenter_username: "{{ vcenter_username }}"
+        vcenter_password: "{{ vcenter_password }}"
+        vcenter_hostname: "{{ vcenter_hostname }}"
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        state: shutdown
+        vm: "{{ item }}"
+      loop: "{{ vm_list231 }}"
+
+########################
