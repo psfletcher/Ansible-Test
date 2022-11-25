@@ -1,0 +1,29 @@
+---
+- name: "build" 
+  hosts: build
+  tasks:
+  - name: Shell
+    environment:
+      GEM_HOME: "{{ ansible_env.HOME }}/gems"
+      PATH: "{{ ansible_env.HOME }}/gems/bin:{{ ansible_env.PATH }}"
+    ansible.builtin.shell: "bundle exec jekyll build" 
+    args: 
+      chdir: /home/psfletcher/demo/
+    register: jekyll
+
+  - debug:
+      var: jekyll.stdout_lines
+
+  - name: Delete files
+    become: yes
+    file:
+      path: /var/www/html/demo/
+      state: absent
+
+  - name: Copying the Directory's contents (sub directories/files)
+    become: yes
+    copy:
+      remote_src: yes
+      src: /home/psfletcher/demo/_site/
+      dest: /var/www/html/demo
+

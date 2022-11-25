@@ -1,0 +1,40 @@
+- name: main - setup-Debian.yml 
+  include_tasks: setup-Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: main - setup filebeat
+  include_tasks: config-filebeat.yml
+  when: filebeat_install | bool
+
+- name: main - setup metricbeat
+  include_tasks: config-metricbeat.yml
+  when: metricbeat_install | bool
+
+- name: main - setup auditbeat
+  include_tasks: config-auditbeat.yml
+  when: auditbeat_install | bool
+
+- name: main - setup packetbeat
+  include_tasks: config-packetbeat.yml
+  when: packetbeat_install | bool
+
+- name: main - setup heartbeat
+  include_tasks: config-heartbeat.yml
+  when: heartbeat_install | bool
+
+- name: main - Ensure Filebeat SSL key pair directory exists.
+  file:
+    path: "{{ filebeat_ssl_dir }}"
+    state: directory
+    mode: 0755
+  when: filebeat_ssl_certificate_file | default(false)
+
+- name: main - Copy SSL key and cert for filebeat.
+  copy:
+    src: "/home/ubuntu/test-ansible/certs/{{ filebeat_ssl_certificate_file }}"
+    dest: "{{ filebeat_ssl_dir }}/{{ filebeat_ssl_certificate_file }}"
+    mode: 0644
+  with_items:
+     - "{{ filebeat_ssl_certificate_file }}"
+  when:
+    - filebeat_ssl_certificate_file | default(false)

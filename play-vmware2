@@ -1,0 +1,146 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Get My vCenter
+      vmware.vmware_rest.vcenter_datacenter_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+      register: r
+      delegate_to: localhost
+
+    - debug:
+        var: r
+
+    - name: Build a list of all the clusters
+      vmware.vmware_rest.vcenter_cluster_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+      register: all_the_clusters
+
+    - debug:
+        var: all_the_clusters
+
+    - name: Retrieve details about the first cluster
+      vmware.vmware_rest.vcenter_cluster_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        cluster: '{{ all_the_clusters.value[0].cluster }}'
+      register: my_cluster_info
+
+    - debug:
+        var: my_cluster_info
+
+    - name: get all the clusters called my_cluster
+      vmware.vmware_rest.vcenter_cluster_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        filter_names:
+        - my_cluster
+      register: my_cluster
+
+    - debug:
+        var: my_cluster
+
+    - name: Search with an invalid filter
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        filter_names: test_vm1_does_not_exists
+
+    - name: Look up the VM called test_vm1 in the inventory
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest      
+        filter_names:
+        - Pedro-NTP-01
+        - Pedro-NTP-02
+        - Pedro-NTP-03
+        - Pedro-NTP-04
+
+      register: search_result
+    
+    - debug:
+       var: search_result
+
+    - name: Collect information about a specific VM
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest       
+        vm: '{{ search_result.value[0].vm }}'
+      register: test_vm1_info
+
+    - debug:
+       var: test_vm1_info
+
+    - name: Collect the list of the existing VM
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest      
+      register: existing_vms
+      until: existing_vms is not failed
+
+    - debug:
+       var: existing_vms
+
+    - name: Shut down the VM
+      vmware.vmware_rest.vcenter_vm_guest_power:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest      
+        state: shutdown
+        vm: '{{ search_result.value[0].vm }}'
+
+    - debug:
+       var: search_result
+
+    - name: Wait until my VM is off
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        vm: '{{ search_result.value[0].vm }}'
+      register: vm_info
+      until:
+      - vm_info is not failed
+      - vm_info.value.power_state == "POWERED_OFF"
+      retries: 60
+      delay: 5
+
+    - name: Turn on the power of the VM
+      vmware.vmware_rest.vcenter_vm_power:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        state: start
+        vm: '{{ search_result.value[0].vm }}'

@@ -1,0 +1,21 @@
+---
+# lookup sample
+- name: "vmware connect"
+  hosts: localhost
+  collections:
+    - vmware.vmware_rest
+    - cloud.common
+  tasks:
+  - name: set connection info
+    ansible.builtin.set_fact:
+      connection_args:
+        vcenter_host: pedro-vcen-01.home.lab
+        vcenter_username: administrator@home.lab
+        vcenter_password: daveArm0ur(boobs)
+        vcenter_validate_certs: no
+
+  - name: lookup MoID of the object
+    ansible.builtin.debug: msg="{{ lookup('vmware.vmware_rest.datacenter_moid', '/home.lab', **connection_args) }}"
+
+ # - name: lookup MoID of the object inside the path
+ #   ansible.builtin.debug: msg="{{ lookup('vmware.vmware_rest.datacenter_moid', '/my_folder/') }}"

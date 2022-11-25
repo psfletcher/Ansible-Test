@@ -1,0 +1,17 @@
+---
+- name: Test Playbook
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - vmware.vmware_rest
+  tasks:
+    - name: Gather info for datacenter
+      vcenter_datacenter_info:
+        vcenter_hostname: "pedro-vcen-01.home.lab"
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_validate_certs: false
+      
+- name: debug
+  debug:
+    var: vm_dc.stdout_lines

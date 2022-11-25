@@ -1,0 +1,12 @@
+---
+  - name: "Run a shell command on a remote host"
+    hosts: build
+    tasks:
+      - name: Execute the Uptime command over Command module
+        command: "pwd"
+        args:
+          chdir: /home/psfletcher 
+        register: pwd
+
+      - debug:
+          var: pwd.stdout_lines

@@ -1,0 +1,21 @@
+---
+- name: Install Packetbeat.
+  package:
+    name: "{{ packetbeat_package }}"
+    state: "{{ packetbeat_package_state }}"
+
+- name: Copy packetbeat configuration.
+  template:
+    src: "{{ packetbeat_template }}"
+    dest: "/etc/{{ packetbeat_package }}/packetbeat.yml"
+    owner: root
+    group: root
+    mode: 0644
+  when: packetbeat_create_config | bool
+  notify: restart packetbeat
+
+- name: Ensure packetbeat is started and enabled at boot.
+  service:
+    name: packetbeat
+    state: started
+    enabled: true

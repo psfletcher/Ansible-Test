@@ -1,0 +1,129 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Look up the VM called test_vm1 in the inventory
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest      
+        filter_names:
+        - Pedro-NTP-01
+        - Pedro-NTP-02
+        - Pedro-NTP-03
+        - Pedro-NTP-04
+      register: search_result
+
+    - debug:
+       var: search_result
+
+    - name: Look up the VM called test_vm1 in the inventory
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+       # clusters: home.lab
+       # folders: 231WebServers
+       # filter_names:
+       # - Pedro-NTP-01
+       # - Pedro-NTP-02
+       # - Pedro-NTP-03
+       # - Pedro-NTP-04
+      register: search_all
+
+    - debug:
+       var: search_all
+#######################
+
+    - name: collect a list of the datacenters
+      vmware.vmware_rest.vcenter_datacenter_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+      register: my_datacenters
+
+    - debug:
+       var: my_datacenters
+
+    - name: collect a list of the clusters
+      vmware.vmware_rest.vcenter_cluster_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+      register: my_clusters
+
+    - debug:
+       var: my_clusters
+
+    - name: collect a list of folders
+      vmware.vmware_rest.vcenter_folder_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+      register: my_folders
+
+    - debug:
+       var: my_folders
+
+
+
+
+
+########################
+    - name: Attempt 1
+      set_fact:
+        vm_list: "{{ vm_list | default([]) + [ item.vm ] }}"
+      loop: "{{ search_result.value }}"  
+
+    - debug:
+       var: vm_list
+
+    - name: Shut down the VM
+      vmware.vmware_rest.vcenter_vm_guest_power:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        state: shutdown
+        vm: "{{ item }}"
+      loop: "{{ vm_list }}"
+
+    - name: Turn on the power of the VM
+      vmware.vmware_rest.vcenter_vm_power:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        state: start
+        vm: "{{ item }}"
+      loop: "{{ vm_list }}"
+
+
+
+
+    - name: collect a list of folders
+      vmware.vmware_rest.vcenter_folder_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        type: "VIRTUAL_MACHINE"
+#        filter_folders:
+#        - "group-v1025"
+      register: my_folders
+
+    - debug:
+       var: my_folders

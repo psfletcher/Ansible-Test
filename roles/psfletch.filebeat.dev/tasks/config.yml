@@ -1,0 +1,17 @@
+---
+- name: Copy Filebeat configuration.
+  template:
+    src: "{{ filebeat_template }}"
+    dest: "filebeat.yml"
+    owner: ubuntu
+    group: ubuntu
+    mode: 0644
+  #notify: restart filebeat
+- name: Copy metricbeat configuration.
+  template:
+    src: "{{ metricbeat_template }}"
+    dest: "metricbeat.yml"
+    owner: ubuntu
+    group: ubuntu
+    mode: 0644
+  #notify: restart filebeat

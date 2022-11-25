@@ -1,0 +1,8 @@
+# add the instance information to yml file
+instances:
+  - name: 'node-1'
+    dns: [ 'warwick-elk-01.warwick.lab' ]
+  - name: 'kibana'
+    dns: [ 'warwick-elk-01.warwick.lab' ]
+  - name: 'logstash'
+    dns: [ 'warwick-elk-01.warwick.lab' ]

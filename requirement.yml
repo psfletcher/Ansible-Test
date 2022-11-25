@@ -1,0 +1,29 @@
+#ansible-galaxy install -r requirement.yml
+---
+collections:
+#  - name: 
+#    source: https://galaxy.ansible.com
+
+#  - name: f5networks.f5_modules
+#    source: https://cloud.redhat.com/api/automation-hub/
+
+#  - name: vmware.vmware_rest
+
+# - name: community.general
+# - name: vmware.vmware_rest
+ - name: community.vmware
+
+roles:
+  # Install a role from Ansible Galaxy.
+#  - name: geerlingguy.ntp
+#  - name: geerlingguy.apache
+#  - name: geerlingguy.filebeat
+#  - name: geerlingguy.elasticsearch
+#  - name: geerlingguy.logstash
+#  - name: geerlingguy.kibana
+#  - name: geerlingguy.java
+#- name: geerlingguy.php
+#- name: geerlingguy.docker
+#- name: geerlingguy.pip
+#- name: geerlingguy.haproxy
+

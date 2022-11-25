@@ -1,0 +1,21 @@
+---
+- name: Install Metricbeat.
+  package:
+    name: "{{ metricbeat_package }}"
+    state: "{{ metricbeat_package_state }}"
+
+- name: Copy metricbeat configuration.
+  template:
+    src: "{{ metricbeat_template }}"
+    dest: "/etc/{{ metricbeat_package }}/metricbeat.yml"
+    owner: root
+    group: root
+    mode: 0644
+  when: metricbeat_create_config | bool   
+  notify: restart metricbeat
+
+- name: Ensure metricbeat is started and enabled at boot.
+  service:
+    name: metricbeat
+    state: started
+    enabled: true

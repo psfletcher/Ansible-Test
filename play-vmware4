@@ -1,0 +1,209 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Look up VM's in the 231WebServers Folder
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+#        power_states: "POWERED_ON"
+        folders: 
+        - "group-v1025"
+      register: search_231WebServers
+
+    - debug:
+       var: search_231WebServers
+
+#######################
+########################
+    - name: Attempt 1
+      set_fact:
+        vm_list231: "{{ vm_list231 | default([]) + [ item.vm ] }}"
+      loop: "{{ search_231WebServers.value }}"
+
+    - debug:
+       var: vm_list231
+
+    - name: Shut down the VM - 231WebServers
+      vmware.vmware_rest.vcenter_vm_guest_power:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        state: shutdown
+        vm: "{{ item }}"
+      loop: "{{ vm_list231 }}"
+
+########################
+
+
+    - name: Look up VM's in the MGMT Folder
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        #power_states: "POWERED_ON"
+        folders:
+        - "group-v1028"
+      register: search_MGMT
+
+    - debug:
+       var: search_MGMT
+
+#######################
+########################
+    - name: Attempt 1
+      set_fact:
+        vm_listMGMT: "{{ vm_listMGMT | default([]) + [ item.vm ] }}"
+      loop: "{{ search_MGMT.value }}"
+
+    - debug:
+       var: vm_listMGMT
+
+    - name: Shut down the VM - MGMT
+      vmware.vmware_rest.vcenter_vm_guest_power:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        state: shutdown
+        vm: "{{ item }}"
+      loop: "{{ vm_listMGMT }}"
+
+########################
+
+
+
+########################
+
+
+    - name: Look up VM's in the Proxy Folder
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        #power_states: "POWERED_ON"
+        folders:
+        - "group-v1026"
+      register: search_Proxy
+
+    - debug:
+       var: search_Proxy
+
+#######################
+########################
+    - name: Attempt 1
+      set_fact:
+        vm_listProxy: "{{ vm_listProxy | default([]) + [ item.vm ] }}"
+      loop: "{{ search_Proxy.value }}"
+
+    - debug:
+       var: vm_listProxy
+
+    - name: Shut down the VM - Proxy
+      vmware.vmware_rest.vcenter_vm_guest_power:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        state: shutdown
+        vm: "{{ item }}"
+      loop: "{{ vm_listProxy }}"
+
+########################
+
+
+########################
+
+########################
+
+
+    - name: Look up VM's in the Desktops Folder
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        #power_states: "POWERED_ON"
+        folders:
+        - "group-v5003"
+      register: search_Desktops
+
+    - debug:
+       var: search_Desktops
+
+#######################
+########################
+    - name: Attempt 1
+      set_fact:
+        vm_listDesk: "{{ vm_listDesk | default([]) + [ item.vm ] }}"
+      loop: "{{ search_Desktops.value }}"
+
+    - debug:
+       var: vm_listDesk
+
+    - name: Shut down the VM - Desktops
+      vmware.vmware_rest.vcenter_vm_power:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        state: stop
+        vm: "{{ item }}"
+      loop: "{{ vm_listDesk }}"
+
+########################
+
+########################
+
+
+    - name: Look up VM's in the FWLab Folder
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        #power_states: "POWERED_ON"
+        folders:
+        - "group-v5002"
+      register: search_FWLab
+
+    - debug:
+       var: search_FWLab
+
+#######################
+########################
+    - name: Attempt 1 - FWLAb
+      set_fact:
+        vm_listFWLab: "{{ vm_listFWLab | default([]) + [ item.vm ] }}"
+      loop: "{{ search_FWLab.value }}"
+
+    - debug:
+       var: vm_listFWLab
+
+    - name: Shut down the VM - Desktops
+      vmware.vmware_rest.vcenter_vm_guest_power:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest
+        state: shutdown
+        vm: "{{ item }}"
+      loop: "{{ vm_listFWLab }}"
+
+########################
+

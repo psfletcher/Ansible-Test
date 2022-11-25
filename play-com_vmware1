@@ -1,0 +1,47 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Gather vmware host fact
+      community.vmware.vmware_host_facts: 
+        hostname: 192.168.201.57
+        username: root
+        password: GwF1409!
+        validate_certs: no
+      register: host_facts
+      delegate_to: localhost
+
+    - debug:
+       var: host_facts
+
+    - name: Gather vmware host config info
+      community.vmware.vmware_host_capability_info:
+        hostname: 192.168.201.57
+        username: root
+        password: GwF1409!
+        validate_certs: no
+        esxi_hostname: Pedro-ESXi-01.home.lab
+      register: host_config_info
+      delegate_to: localhost
+
+    - debug:
+       var: host_config_info
+
+
+
+#---
+#- hosts: localhost
+#  gather_facts: no
+#  tasks:
+#    - name: Look up VM's in the 231WebServers Folder
+#      vmware.vmware_rest.vcenter_vm_info:
+#        vcenter_username: "administrator@home.lab"
+#        vcenter_password: "daveArm0ur(boobs)"
+#        vcenter_hostname: pedro-vcen-01.home.lab
+#        vcenter_validate_certs: no
+#        vcenter_rest_log_file: /tmp/vmware_rest
+#        power_states: "POWERED_ON"
+#      register: all_vm
+#
+#    - debug:
+#       var: all_vm

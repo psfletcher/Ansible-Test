@@ -1,0 +1,21 @@
+---
+- name: Install Auditbeat.
+  package:
+    name: "{{ auditbeat_package }}"
+    state: "{{ auditbeat_package_state }}"
+
+- name: Copy Auditbeat configuration.
+  template:
+    src: "{{ auditbeat_template }}"
+    dest: "/etc/{{ auditbeat_package }}/auditbeat.yml"
+    owner: root
+    group: root
+    mode: 0644
+  when: auditbeat_create_config | bool  
+  notify: restart auditbeat
+
+- name: Ensure Auditbeat is started and enabled at boot.
+  service:
+    name: auditbeat
+    state: started
+    enabled: true

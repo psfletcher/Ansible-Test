@@ -1,0 +1,5 @@
+- hosts:
+#    - pedro-ntp-01.home.lab
+    - haproxy
+  tasks:
+    - action: ping
