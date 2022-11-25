@@ -1,6 +1,6 @@
 ---
 - name: Example External Variables file
-  hosts: localhost
+  #hosts: localhost
   vars_files:
     - ./vars/vars
 
