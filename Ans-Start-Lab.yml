@@ -6,4 +6,4 @@
    # - ./vars/vars
   #tasks:
 - name: Got to get this to work
-  import_playbook: p./scripts/stop-vm-231Web.yml
+  import_playbook: ./scripts/stop-vm-231Web.yml
