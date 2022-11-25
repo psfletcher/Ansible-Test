@@ -5,4 +5,4 @@
    vars_files:
     - ./vars/vars
    tasks:
-    - include: play-vars.yml
+    - include_tasks: play-vars.yml
