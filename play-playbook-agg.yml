@@ -5,4 +5,4 @@
    #vars_files:
    # - ./vars/vars
    tasks:
-    - include_playbook: play-vmware-all
+    - include: play-vmware-all
