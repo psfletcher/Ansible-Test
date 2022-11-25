@@ -1,7 +1,7 @@
 ---
  - name: Another test
    #hosts: localhost
-   gather_facts: false
+   #gather_facts: false
    #vars_files:
    # - ./vars/vars
    tasks:
