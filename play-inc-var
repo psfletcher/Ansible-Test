@@ -6,4 +6,4 @@
     - ./vars/vars
    tasks:
     - include_tasks: play-vars.yml
-    - include_playbook: play-vmware-all-vars
+    - include: play-vmware-all-vars
