@@ -1,8 +1,8 @@
 ---
 #- name: Example External Variables file
 #  hosts: localhost
-#  vars_files:
-#    - ./vars/vars
+vars_files:
+  - ./vars/vars
   - name: Print the value of variable docker_version
     debug: 
       msg: "{{ docker_version}} "
