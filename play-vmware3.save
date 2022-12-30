@@ -1,0 +1,100 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Look up the VM called test_vm1 in the inventory
+      vmware.vmware_rest.vcenter_vm_info:
+        vcenter_username: "administrator@home.lab"
+        vcenter_password: "daveArm0ur(boobs)"
+        vcenter_hostname: pedro-vcen-01.home.lab
+        vcenter_validate_certs: no
+        vcenter_rest_log_file: /tmp/vmware_rest      
+        filter_names:
+        - Pedro-NTP-01
+        - Pedro-NTP-02
+        - Pedro-NTP-03
+        - Pedro-NTP-04
+
+      register: search_result
+    
+    - debug:
+       var: search_result
+
+    - debug:
+       var: search_result.value[0].vm 
+
+    - name: Attempt 1
+      set_fact:
+        port_list:  "{{ port_list|default([]) + [search_result.value.vm] }}" 
+      loop: "{{ search_result.value.vm }}"  
+
+
+Hi All,
+Help i'm struggling with moving outputs from one command into a input to another.
+So in this case i've ran a info command and i get a list of data back.
+############
+  tasks:
+    - name: Look up the VM from filter_names in the inventory
+      vmware.vmware_rest.vcenter_vm_info:
+        filter_names:
+        - Pedro-NTP-01
+        - Pedro-NTP-02
+        - Pedro-NTP-03
+        - Pedro-NTP-04
+
+      register: search_result
+
+    - debug:
+       var: search_result
+############
+
+ok: [localhost] => {
+    "search_result": {
+        "changed": false,
+        "failed": false,
+        "value": [
+            {
+                "cpu_count": 4,
+                "memory_size_MiB": 1024,
+                "name": "Pedro-NTP-04",
+                "power_state": "POWERED_ON",
+                "vm": "vm-1016"
+            },
+            {
+                "cpu_count": 1,
+                "memory_size_MiB": 1024,
+                "name": "Pedro-NTP-03",
+                "power_state": "POWERED_ON",
+                "vm": "vm-1017"
+            },
+            {
+                "cpu_count": 1,
+                "memory_size_MiB": 1024,
+                "name": "Pedro-NTP-02",
+                "power_state": "POWERED_ON",
+                "vm": "vm-1018"
+            },
+            {
+                "cpu_count": 4,
+                "memory_size_MiB": 1024,
+                "name": "Pedro-NTP-01",
+                "power_state": "POWERED_ON",
+                "vm": "vm-39"
+            }
+        ]
+    }
+}
+
+Now i want the vm variable to use in another command.
+I can filter out one of these variable with.
+
+    - debug:
+       var: search_result.value[3].vm
+
+But how do i get a 2d array (list) with in this case the 4 vm variable so i can feed into another task like this power task. (instead of the parameter in there now)
+
+
+    - name: Shut down the VM
+      vmware.vmware_rest.vcenter_vm_guest_power:
+        state: shutdown
+        vm: '{{ search_result.value[0].vm }}'
